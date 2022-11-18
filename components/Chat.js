@@ -1,7 +1,7 @@
 import { GiftedChat, Bubble } from 'react-native-gifted-chat'
 import React from 'react';
 import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { firebase } from 'firebase';
+import { firebase } from '@firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
@@ -10,6 +10,12 @@ export default class Chat extends React.Component {
     super();
     this.state = {
       messages: [],
+      uid: 0,
+      user: {
+        _id: '',
+        avatar: '',
+        name: '',
+      },
     }
 
     const firebaseConfig = {
@@ -40,6 +46,7 @@ export default class Chat extends React.Component {
     this.setState({
       messages: [
         {
+          _id: 1,
           text: `{${name} has entered the chat`,
           createdAt: new Date(),
           system: true,
@@ -64,6 +71,10 @@ export default class Chat extends React.Component {
       this.setState({
         uid: user.uid,
         messages: [],
+        user: {
+          _id: user.uid,
+          name: name,
+        }
       });
       this.unsubscribe = this.referenceChatMessages
         .orderBy('createdAt', 'desc')
@@ -77,21 +88,22 @@ export default class Chat extends React.Component {
   }
 
   onSend(messages = []) {
-    this.setState
-      (previousState => ({
+    this.setState(
+      (previousState) => ({
         messages: GiftedChat.append(previousState.messages, messages),
       }),
-        () => {
-          this.addMessage();
-        }
-      );
+      () => {
+        this.addMessage();
+      }
+    );
   }
 
   addMessage = () => {
     const message = this.state.messages[0];
     this.referenceChatMessages.add({
-      _id: this.state._id,
-      text: message.text,
+      uid: this.state.uid,
+      _id: message._id,
+      text: message.text || '',
       createdAt: message.createdAt,
       user: message.user,
     });
@@ -121,7 +133,11 @@ export default class Chat extends React.Component {
         _id: data._id,
         text: data.text,
         createdAt: data.createdAt.toDate(),
-        user: data.user,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar || '',
+        }
       });
     });
     this.setState({
