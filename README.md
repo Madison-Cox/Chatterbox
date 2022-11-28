@@ -44,20 +44,20 @@ Technologies used:
     "expo-location": "~15.0.1"
 ```
 # How to Install
-* Clone the repository: ```bash git clone https://github.com/Madison-Cox/Chatterbox.git```
-* Install Expo CLI as a global npm package: ```bash npm install -g expo-cli```
-* Install all dependencies: ```bash npm install ```
-* go to https://expo.dev/ Create an account and log in via terminal with ```bash expo login ```
+* Clone the repository: ``` git clone https://github.com/Madison-Cox/Chatterbox.git```
+* Install Expo CLI as a global npm package: ``` npm install -g expo-cli```
+* Install all dependencies: ``` npm install ```
+* go to https://expo.dev/ Create an account and log in via terminal with ``` expo login ```
 * Follow expo CLI's instructions depending on your preferred simulator (ex. Android Studio)
-* Start the Project: ```bash npm start ```
-* If Expo cannot detect the running project, try running it with ```bash npx expo start --tunnel ```
+* Start the Project: ``` npm start ```
+* If Expo cannot detect the running project, try running it with ``` npx expo start --tunnel ```
 
 # Database config
 * Go to https://firebase.google.com/ and sign in a google account.
 * Go to Firebase console and click on "Create Project".
 * Once on your project's dashboard, click on "Develop" on the left side of screen, Then "Cloud firestore", then "Create Database". Select "Test Mode" then select "Done".
 * Create a new collection named "messages".
-* Under "Project Settings", scroll down and click the "Firestore for Web" button ```bash </> ```
+* Under "Project Settings", scroll down and click the "Firestore for Web" button ``` </> ```
 * choose a name for the chat app, then click "Register" and copy configuration code and paste it in the chat.js file inside components folder of cloned repository.
 ```bash
 apiKey: "*********************",
