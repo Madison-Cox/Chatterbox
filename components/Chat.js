@@ -6,6 +6,8 @@ import NetInfo from '@react-native-community/netinfo';
 import { firebase } from '@firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 export default class Chat extends React.Component {
   constructor() {
@@ -56,6 +58,7 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
+    this.deleteMessages();
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
 
@@ -120,6 +123,8 @@ export default class Chat extends React.Component {
       text: message.text || '',
       createdAt: message.createdAt,
       user: message.user,
+      image: message.image || null,
+      location: message.location || null,
     });
   };
 
@@ -173,7 +178,9 @@ export default class Chat extends React.Component {
           _id: data.user._id,
           name: data.user.name,
           avatar: data.user.avatar || '',
-        }
+        },
+        image: data.image || null,
+        location: data.location || null,
       });
     });
     this.setState({
@@ -182,10 +189,32 @@ export default class Chat extends React.Component {
   };
 
   renderInputToolbar(props) {
-    if (this.state.isConnected == false) {
+    if (this.state.isConnected === false) {
     } else {
       return <InputToolbar {...props} />;
     }
+  }
+
+  renderCustomActions = (props) => {
+    return <CustomActions {...props} />;
+  };
+
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
   }
 
 
@@ -198,8 +227,10 @@ export default class Chat extends React.Component {
       <View style={{ backgroundColor: color, flex: 1 }}>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
-          messages={this.state.messages}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
+          renderActions={this.renderCustomActions.bind(this)}
+          renderCustomView={this.renderCustomView}
+          messages={this.state.messages}
           onSend={(messages) => this.onSend(messages)}
           user={{
             _id: this.state.uid,
